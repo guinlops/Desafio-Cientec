@@ -41,48 +41,53 @@ namespace DesafioCientec
                         Console.Clear();
                         Console.WriteLine("CREATE");
                         string inp1, inp2;
-                        Console.Write("Digite o title do Album: ");
+                        Console.Write("Digite o Nome: ");
                         inp1 = Console.ReadLine();
                         Console.WriteLine();
-                        Console.Write("Digite o artist do album: ");
+                        Console.Write("Digite o CPF no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY: ");
                         inp2 = Console.ReadLine();
                         Console.WriteLine();
                         UserRepository.Create(inp1, inp2);
                         break;
 
                     case 2:
+                        Console.Clear();
+                        Console.WriteLine("Consulta geral");
+                        UserRepository.Read_t();
+                        Console.WriteLine();
+                        option = 1;
+                        break;
 
                         
-                        break;
                     case 3:
                         Console.Clear();
-                        Console.WriteLine("READ BY TITLE");
-                        Console.Write("Digite o Title: ");
-                        string? title = Console.ReadLine();
-                        //READ FUNCTION
+                        Console.WriteLine("Consulta por Nome");
+                        Console.Write("Digite o Nome: ");
+                        string? nome= Console.ReadLine();
+                        UserRepository.Read_t(nome:nome);
                         Console.WriteLine();
                         option = 1;
                         break;
                     case 4:
                         Console.Clear();
-                        Console.WriteLine("READ BY ARTIST");
-                        Console.Write("Digite o Artist: ");
-                        string? artist = Console.ReadLine();
+                        Console.WriteLine("Consulta por CPF");
+                        Console.Write("Digite o CPF: ");
+                        string? cpf= Console.ReadLine();
 
-                        //READ FUNCTION
+                        UserRepository.Read_t(cpf: cpf);
                         Console.WriteLine();
                         option = 1;
                         break;
 
                     case 5:
                         Console.Clear();
-                        Console.WriteLine("READ BY ARTIST AND NAME");
-                        Console.Write("Digite o Artist: ");
-                        artist = Console.ReadLine();
+                        Console.WriteLine("Consulta por CPF e por Nome");
+                        Console.Write("Digite o CPF: ");
+                        cpf = Console.ReadLine();
                         Console.WriteLine();
-                        Console.Write("Digite o Title: ");
-                        title = Console.ReadLine();
-                        //READ FUNCTION
+                        Console.Write("Digite o Nome: ");
+                        nome= Console.ReadLine();
+                        UserRepository.Read_t(nome:nome, cpf: cpf);
                         Console.WriteLine();
                        
                         Console.WriteLine();
@@ -98,11 +103,11 @@ namespace DesafioCientec
                         int.TryParse(Console.ReadLine(), out id);
 
                         Console.Write("Digite o novo nome do artista: ");
-                        artist = Console.ReadLine();
+                        //artist = Console.ReadLine();
                         Console.WriteLine();
 
                         Console.Write("Digite o novo Title: ");
-                        title = Console.ReadLine();
+                        //title = Console.ReadLine();
                         Console.WriteLine();
                         //UPDATE FUNCTION
                         
@@ -114,10 +119,10 @@ namespace DesafioCientec
                         Console.Clear();
                         Console.WriteLine("DELETE");
                         Console.Write("Digite o Artist: ");
-                        artist = Console.ReadLine();
+                        //artist = Console.ReadLine();
                         Console.WriteLine();
                         Console.Write("Digite o Title: ");
-                        title = Console.ReadLine();
+                        //title = Console.ReadLine();
                         Console.WriteLine();
                         //DELETE FUNCTION
 

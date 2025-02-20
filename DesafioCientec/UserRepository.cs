@@ -52,5 +52,63 @@ namespace DesafioCientec
                 Console.WriteLine("Cidadao Inserido com Sucesso!");
             }
         }
+
+
+        public static void Read_t(string nome = null, string cpf= null)
+        {
+           
+            // Cria a query inicial
+            string query = "SELECT * FROM Cidadaos WHERE 1=1";  // A condição WHERE 1=1 sempre é verdadeira
+
+            // Adiciona os filtros dinamicamente
+            if (!string.IsNullOrEmpty(nome))
+            {
+                query += " AND Nome = @Nome";
+            }
+
+            if (!string.IsNullOrEmpty(cpf))
+            {
+                query += " AND Cpf = @Cpf";
+                cpf = CpfTreatment.RemoverMascaraCPF(cpf);
+            }
+
+            using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
+            {
+                // Adiciona os parâmetros se existirem
+                if (!string.IsNullOrEmpty(nome))
+                {
+                    myCommand.Parameters.AddWithValue("@Nome",nome);
+                }
+
+                if (!string.IsNullOrEmpty(cpf))
+                {
+                    myCommand.Parameters.AddWithValue("@Cpf", cpf);
+                }
+
+                var result = myCommand.ExecuteReader();
+                if (result.HasRows)
+                {
+                    while (result.Read())
+                    {
+                        Console.WriteLine("ID: {0} - Nome: {1} - CPF: {2}", result["id"], result["Nome"], CpfTreatment.FormatCPF(result["Cpf"].ToString()));
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(nome) && !string.IsNullOrEmpty(cpf))
+                    {
+                        Console.WriteLine("Nenhum Cidadão encontrado com esse Nome e CPF.");
+                    }
+                    else if (!string.IsNullOrEmpty(nome))
+                    {
+                        Console.WriteLine("Nenhum Cidadão encontrado com esse Nome.");
+                    }
+                    else if (!string.IsNullOrEmpty(cpf))
+                    {
+                        Console.WriteLine("Nenhum Cidadão encontrado com esse CPF.");
+                    }
+                }
+            }
+        }
     }
 }
