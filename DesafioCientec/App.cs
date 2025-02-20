@@ -40,14 +40,14 @@ namespace DesafioCientec
                         //TRY
                         Console.Clear();
                         Console.WriteLine("CREATE");
-                        string inp1, inp2;
+                        string nome, cpf;
                         Console.Write("Digite o Nome: ");
-                        inp1 = Console.ReadLine();
+                        nome = Console.ReadLine();
                         Console.WriteLine();
                         Console.Write("Digite o CPF no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY: ");
-                        inp2 = Console.ReadLine();
+                        cpf = Console.ReadLine();
                         Console.WriteLine();
-                        UserRepository.Create(inp1, inp2);
+                        UserRepository.Create(nome, cpf);
                         break;
 
                     case 2:
@@ -63,16 +63,16 @@ namespace DesafioCientec
                         Console.Clear();
                         Console.WriteLine("Consulta por Nome");
                         Console.Write("Digite o Nome: ");
-                        string? nome= Console.ReadLine();
+                        nome= Console.ReadLine();
                         UserRepository.Read_t(nome:nome);
                         Console.WriteLine();
                         option = 1;
                         break;
                     case 4:
                         Console.Clear();
-                        Console.WriteLine("Consulta por CPF");
+                        Console.WriteLine("Consulta por CPF no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY");
                         Console.Write("Digite o CPF: ");
-                        string? cpf= Console.ReadLine();
+                        cpf= Console.ReadLine();
 
                         UserRepository.Read_t(cpf: cpf);
                         Console.WriteLine();
@@ -82,7 +82,7 @@ namespace DesafioCientec
                     case 5:
                         Console.Clear();
                         Console.WriteLine("Consulta por CPF e por Nome");
-                        Console.Write("Digite o CPF: ");
+                        Console.Write("Digite o CPF no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY: ");
                         cpf = Console.ReadLine();
                         Console.WriteLine();
                         Console.Write("Digite o Nome: ");
@@ -102,14 +102,14 @@ namespace DesafioCientec
                         int id;
                         int.TryParse(Console.ReadLine(), out id);
 
-                        Console.Write("Digite o novo nome do artista: ");
-                        //artist = Console.ReadLine();
+                        Console.Write($"Digite o nome corrigido ou aperte {selected_font_Color}enter{reset_font_Color} para não alterar : ");
+                        nome= Console.ReadLine();
                         Console.WriteLine();
 
-                        Console.Write("Digite o novo Title: ");
-                        //title = Console.ReadLine();
+                        Console.Write($"Digite o CPF corrigido no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY ou aperte {selected_font_Color}enter{reset_font_Color} para não alterar : ");
+                        cpf= Console.ReadLine();
                         Console.WriteLine();
-                        //UPDATE FUNCTION
+                        UserRepository.update(id, nome, cpf);
                         
                         Console.WriteLine();
                         option = 1;

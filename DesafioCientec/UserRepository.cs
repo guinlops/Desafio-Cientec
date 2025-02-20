@@ -24,22 +24,13 @@ namespace DesafioCientec
                 Console.WriteLine("CPF inválido!");
                 return;
             }
+            cpf = CpfTreatment.RemoverMascaraCPF(cpf);
+           
 
-            cpf=CpfTreatment.RemoverMascaraCPF(cpf);
-
-            string checkQuery = "SELECT COUNT(*) FROM Cidadaos WHERE Cpf = @Cpf";
-
-            using (SQLiteCommand checkCommand = new SQLiteCommand(checkQuery, Database.GetConnection()))
+            if (CpfJaExiste(cpf))
             {
-                checkCommand.Parameters.AddWithValue("@Cpf", cpf);
-
-                int cpfCount = Convert.ToInt32(checkCommand.ExecuteScalar());
-
-                if (cpfCount > 0)
-                {
-                    Console.WriteLine("O cpf já foi cadastrado.");
-                    return;
-                }
+                Console.WriteLine("O cpf já foi cadastrado.");
+                return;
             }
 
             string query = "INSERT INTO Cidadaos ('Nome', 'Cpf') VALUES (@Nome, @Cpf)";
@@ -109,6 +100,83 @@ namespace DesafioCientec
                     }
                 }
             }
+        }
+
+
+        public static void update(int id, string novoNome, string novoCpf)
+        {
+            if (string.IsNullOrEmpty(novoNome) && string.IsNullOrEmpty(novoCpf))
+            {
+                Console.WriteLine("É necessário fornecer um novo nome ou um novo cpf,");
+                return;
+            }
+
+            string query = "UPDATE Cidadaos SET ";
+            List<string> updates = new List<string>();
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+            if (!string.IsNullOrEmpty(novoNome))
+            {
+                updates.Add("Nome = @novoNome");
+                parameters["@novoNome"] = novoNome;
+            }
+
+            if (!string.IsNullOrEmpty(novoCpf))
+            {
+                novoCpf = CpfTreatment.RemoverMascaraCPF(novoCpf);
+                if (CpfJaExiste(novoCpf))
+                {
+
+                    Console.WriteLine("O cpf já foi cadastrado.");
+                    return;
+                }
+
+                updates.Add("Cpf = @novoCpf");
+                parameters["@novoCpf"] = novoCpf;
+            }
+
+            query += string.Join(", ", updates) + " WHERE id = @id";
+            parameters["@id"] = id;
+
+            using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
+            {
+                foreach (var param in parameters)
+                {
+                    myCommand.Parameters.AddWithValue(param.Key, param.Value);
+                }
+
+                int rowsAffected = myCommand.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    Console.WriteLine("Cidadão atualizado com sucesso.");
+                }
+                else
+                {
+                    Console.WriteLine("Nenhum Cidadão encontrado com esse id.");
+                }
+            }
+        }
+
+        private  static bool CpfJaExiste(string cpf) {
+
+            
+
+            string checkQuery = "SELECT COUNT(*) FROM Cidadaos WHERE Cpf = @Cpf";
+
+            using (SQLiteCommand checkCommand = new SQLiteCommand(checkQuery, Database.GetConnection()))
+            {
+                checkCommand.Parameters.AddWithValue("@Cpf", cpf);
+
+                int cpfCount = Convert.ToInt32(checkCommand.ExecuteScalar());
+
+                if (cpfCount > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
