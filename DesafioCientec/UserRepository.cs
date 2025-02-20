@@ -178,5 +178,37 @@ namespace DesafioCientec
 
             return false;
         }
+
+
+
+        public static void Delete(string nome, string cpf)
+        {
+
+            if (string.IsNullOrEmpty(nome) && string.IsNullOrEmpty(cpf))
+            {
+                Console.WriteLine("É necessário fornecer nome & cpf a serem deletados");
+                return;
+            }
+
+            cpf = CpfTreatment.RemoverMascaraCPF(cpf);
+            string query = "DELETE FROM Cidadaos WHERE Nome= @Nome AND Cpf= @Cpf";
+
+            using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
+            {
+                myCommand.Parameters.AddWithValue("@Nome", nome);
+                myCommand.Parameters.AddWithValue("@Cpf", cpf);
+
+                int rowsAffected = myCommand.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    Console.WriteLine("Cidadão deletado com sucesso.");
+                }
+                else
+                {
+                    Console.WriteLine("Nenhum Cidadão encontrado com esse nome e Cpf.");
+                }
+            }
+        }
     }
 }

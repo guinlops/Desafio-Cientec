@@ -118,13 +118,13 @@ namespace DesafioCientec
                     case 7:
                         Console.Clear();
                         Console.WriteLine("DELETE");
-                        Console.Write("Digite o Artist: ");
-                        //artist = Console.ReadLine();
+                        Console.Write("Digite o Nome: ");
+                        nome = Console.ReadLine();
                         Console.WriteLine();
-                        Console.Write("Digite o Title: ");
-                        //title = Console.ReadLine();
+                        Console.Write("Digite o cpf: ");
+                        cpf = Console.ReadLine();
                         Console.WriteLine();
-                        //DELETE FUNCTION
+                        UserRepository.Delete(nome, cpf);
 
                         
                         Console.WriteLine();
@@ -144,6 +144,7 @@ namespace DesafioCientec
                 option = MenuOptions();
             }
             Console.WriteLine("Tchau!");
+            
         }
 
         private int CrudOptions()
