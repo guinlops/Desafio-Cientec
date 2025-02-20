@@ -10,16 +10,16 @@ namespace DesafioCientec
     {
         private static SQLiteConnection? myConnection;
 
-        public Database()
+        public Database(string db_url)
         {
             try
             {
-                myConnection = new SQLiteConnection("Data Source= database.sqlite3");
+                myConnection = new SQLiteConnection($"Data Source={db_url}");
 
             //Criar pela primeira vez
-            if (!File.Exists("./database.sqlite3"))
+            if (!File.Exists($"./{db_url}"))
             {
-                SQLiteConnection.CreateFile("database.sqlite3");
+                SQLiteConnection.CreateFile(db_url);
                 System.Console.WriteLine("Database file created");
                 OpenConnection();
                 createTable();
@@ -122,6 +122,8 @@ namespace DesafioCientec
 
             }
         }
+
+        
     }
 }
 

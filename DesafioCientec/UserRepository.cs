@@ -9,7 +9,7 @@ namespace DesafioCientec
 {
     internal class UserRepository
     {
-        public static void Create(string nome, string cpf)
+        public static int Create(string nome, string cpf)
         {
 
             try
@@ -17,14 +17,14 @@ namespace DesafioCientec
                 if (string.IsNullOrEmpty(nome) && string.IsNullOrEmpty(cpf))
                 {
                     Console.WriteLine("Input inválido");
-                    return;
+                    return 0;
                 }
 
                 //Expressao Regular para validar CPF
                 if (!CpfTreatment.ValidarCPF(cpf))
                 {
                     Console.WriteLine("CPF inválido!");
-                    return;
+                    return 0;
                 }
                 cpf = CpfTreatment.RemoverMascaraCPF(cpf);
 
@@ -32,7 +32,7 @@ namespace DesafioCientec
                 if (CpfJaExiste(cpf))
                 {
                     Console.WriteLine("O cpf já foi cadastrado.");
-                    return;
+                    return 0 ;
                 }
 
                 string query = "INSERT INTO Cidadaos ('Nome', 'Cpf') VALUES (@Nome, @Cpf)";
@@ -46,6 +46,7 @@ namespace DesafioCientec
 
                     myCommand.ExecuteNonQuery();
                     Console.WriteLine("Cidadao Inserido com Sucesso!");
+                    return 1;
                 }
             }
             catch (SQLiteException ex)
@@ -60,11 +61,12 @@ namespace DesafioCientec
             {
                 Console.WriteLine($"\u001b[31mErro inesperado ao criar cidadão: {ex.Message}\u001b[0m");
             }
+            return 0;
 
         }
+       
 
-
-        public static void Read_t(string nome = null, string cpf = null)
+        public static int Read_t(string? nome = null, string? cpf = null)
         {
             try
             {
@@ -88,7 +90,7 @@ namespace DesafioCientec
                     // Adiciona os parâmetros se existirem
                     if (!string.IsNullOrEmpty(nome))
                     {
-                        myCommand.Parameters.AddWithValue("@NomeS", nome);
+                        myCommand.Parameters.AddWithValue("@Nome", nome);
                     }
 
                     if (!string.IsNullOrEmpty(cpf))
@@ -101,8 +103,9 @@ namespace DesafioCientec
                     {
                         while (result.Read())
                         {
-                            Console.WriteLine("ID: {0} - Nome: {1} - CPF: {2}", result["id"], result["Nome"], CpfTreatment.FormatCPF(result["Cpf"].ToString()));
+                            Console.WriteLine("ID: {0} - Nome: {1} - CPF: {2}", result["id"], result["Nome"], CpfTreatment.FormatCPF(result["Cpf"].ToString()??""));
                         }
+                        return 1;
                     }
                     else
                     {
@@ -117,6 +120,7 @@ namespace DesafioCientec
                         else if (!string.IsNullOrEmpty(cpf))
                         {
                             Console.WriteLine("Nenhum Cidadão encontrado com esse CPF.");
+                            
                         }
                     }
                 }
@@ -135,10 +139,12 @@ namespace DesafioCientec
                 Console.WriteLine($"\u001b[31mErro inesperado ao buscar cidadãos: : {ex.Message}\u001b[0m");
             }
 
+            return 0;
+
         }
 
 
-        public static void update(int id, string novoNome, string novoCpf)
+        public static int  update(int id, string novoNome, string novoCpf)
         {
 
             try
@@ -146,8 +152,16 @@ namespace DesafioCientec
                 if (string.IsNullOrEmpty(novoNome) && string.IsNullOrEmpty(novoCpf))
                 {
                     Console.WriteLine("É necessário fornecer um novo nome ou um novo cpf,");
-                    return;
+                    return 0;
                 }
+                //Expressao Regular para validar CPF
+                if (!CpfTreatment.ValidarCPF(novoCpf))
+                {
+                    Console.WriteLine("CPF inválido!");
+                    return 0;
+                }
+               
+
 
                 string query = "UPDATE Cidadaos SET ";
                 List<string> updates = new List<string>();
@@ -166,7 +180,7 @@ namespace DesafioCientec
                     {
 
                         Console.WriteLine("O cpf já foi cadastrado.");
-                        return;
+                        return 0;
                     }
 
                     updates.Add("Cpf = @novoCpf");
@@ -188,6 +202,7 @@ namespace DesafioCientec
                     if (rowsAffected > 0)
                     {
                         Console.WriteLine("Cidadão atualizado com sucesso.");
+                        return 1;
                     }
                     else
                     {
@@ -203,6 +218,8 @@ namespace DesafioCientec
             {
                 Console.WriteLine($"\u001b[31mErro inesperado ao atualizar cidadão: : {ex.Message}\u001b[0m");
             }
+
+            return 0;
         }
 
         private static bool CpfJaExiste(string cpf)
@@ -242,14 +259,14 @@ namespace DesafioCientec
 
 
 
-        public static void Delete(string nome, string cpf)
+        public static int Delete(string nome, string cpf)
         {
             try
             {
                 if (string.IsNullOrEmpty(nome) && string.IsNullOrEmpty(cpf))
                 {
                     Console.WriteLine("É necessário fornecer nome & cpf a serem deletados");
-                    return;
+                    return 0;
                 }
 
                 cpf = CpfTreatment.RemoverMascaraCPF(cpf);
@@ -265,6 +282,7 @@ namespace DesafioCientec
                     if (rowsAffected > 0)
                     {
                         Console.WriteLine("Cidadão deletado com sucesso.");
+                        return 1;
                     }
                     else
                     {
@@ -280,6 +298,8 @@ namespace DesafioCientec
             {
                 Console.WriteLine($"\u001b[31mErro inesperado ao deletar cidadão: {ex.Message}\u001b[0m");
             }
+
+            return 0;
         }
     }
 }

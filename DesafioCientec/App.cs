@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace DesafioCientec
         string selected_font_Color = "\u001b[32m";
        
         private int option = 1;
-        Database dbObj = new Database();
+        Database dbObj = new Database("database.sqlite3");
         public void init()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -25,30 +26,35 @@ namespace DesafioCientec
             Menu();
         }
 
+        //(nome!=null?nome:"")
+        //(cpf!=null?cpf:"")
 
         private void Menu()
         {
             while (option != 8)
             {
                 Console.WriteLine("\nUse ⬆️ and ⬇️ para navegar e pressione \u001b[32mENTER\u001b[0m para selecionar 👍👍👍");
+                string? nome, cpf;
                 option = CrudOptions();
 
                 dbObj.OpenConnection();
                 switch (option)
                 {
-
+                    
                     case 1:
                         //TRY
                         Console.Clear();
                         Console.WriteLine("CREATE");
-                        string nome, cpf;
+                        
                         Console.Write("Digite o Nome: ");
                         nome = Console.ReadLine();
                         Console.WriteLine();
                         Console.Write("Digite o CPF no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY: ");
                         cpf = Console.ReadLine();
                         Console.WriteLine();
-                        UserRepository.Create(nome, cpf);
+                        UserRepository.Create(nome ?? string.Empty, cpf ?? string.Empty);
+
+                        
                         break;
 
                     case 2:
@@ -65,7 +71,8 @@ namespace DesafioCientec
                         Console.WriteLine("Consulta por Nome");
                         Console.Write("Digite o Nome: ");
                         nome = Console.ReadLine();
-                        UserRepository.Read_t(nome: nome);
+                        UserRepository.Read_t(nome: nome ?? string.Empty);
+                        
                         Console.WriteLine();
                         option = 1;
                         break;
@@ -75,7 +82,7 @@ namespace DesafioCientec
                         Console.Write("Digite o CPF: ");
                         cpf = Console.ReadLine();
 
-                        UserRepository.Read_t(cpf: cpf);
+                        UserRepository.Read_t(cpf: cpf ?? string.Empty);
                         Console.WriteLine();
                         option = 1;
                         break;
@@ -88,7 +95,7 @@ namespace DesafioCientec
                         Console.WriteLine();
                         Console.Write("Digite o Nome: ");
                         nome = Console.ReadLine();
-                        UserRepository.Read_t(nome: nome, cpf: cpf);
+                        UserRepository.Read_t(nome: nome ?? string.Empty, cpf: cpf ?? string.Empty);
                         Console.WriteLine();
 
                         Console.WriteLine();
@@ -110,7 +117,7 @@ namespace DesafioCientec
                         Console.Write($"Digite o CPF corrigido no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY ou aperte \u001b[31menter\u001b[0m para não alterar : ");
                         cpf = Console.ReadLine();
                         Console.WriteLine();
-                        UserRepository.update(id, nome, cpf);
+                        UserRepository.update(id, nome ?? string.Empty, cpf ?? string.Empty);
 
                         Console.WriteLine();
                         option = 1;
@@ -125,7 +132,7 @@ namespace DesafioCientec
                         Console.Write("Digite o cpf: ");
                         cpf = Console.ReadLine();
                         Console.WriteLine();
-                        UserRepository.Delete(nome, cpf);
+                        UserRepository.Delete(nome ?? string.Empty, cpf ?? string.Empty);
 
 
                         Console.WriteLine();
