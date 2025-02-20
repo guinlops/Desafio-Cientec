@@ -21,7 +21,7 @@ namespace DesafioCientec
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.OutputEncoding = Encoding.Unicode;
             Console.CursorVisible = false;
-            Console.WriteLine("\nUse ⬆️ and ⬇️ para navegar e pressione \u001b[32mENTER\u001b[0m para selecionar 👍👍👍");
+            
             Menu();
         }
 
@@ -30,6 +30,7 @@ namespace DesafioCientec
         {
             while (option != 8)
             {
+                Console.WriteLine("\nUse ⬆️ and ⬇️ para navegar e pressione \u001b[32mENTER\u001b[0m para selecionar 👍👍👍");
                 option = CrudOptions();
 
                 dbObj.OpenConnection();
