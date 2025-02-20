@@ -9,172 +9,233 @@ namespace DesafioCientec
 {
     internal class UserRepository
     {
-
         public static void Create(string nome, string cpf)
         {
-            if (string.IsNullOrEmpty(nome) && string.IsNullOrEmpty(cpf))
+
+            try
             {
-                Console.WriteLine("Input inválido");
-                return;
+                if (string.IsNullOrEmpty(nome) && string.IsNullOrEmpty(cpf))
+                {
+                    Console.WriteLine("Input inválido");
+                    return;
+                }
+
+                //Expressao Regular para validar CPF
+                if (!CpfTreatment.ValidarCPF(cpf))
+                {
+                    Console.WriteLine("CPF inválido!");
+                    return;
+                }
+                cpf = CpfTreatment.RemoverMascaraCPF(cpf);
+
+
+                if (CpfJaExiste(cpf))
+                {
+                    Console.WriteLine("O cpf já foi cadastrado.");
+                    return;
+                }
+
+                string query = "INSERT INTO Cidadaos ('Nome', 'Cpf') VALUES (@Nome, @Cpf)";
+
+
+
+                using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
+                {
+                    myCommand.Parameters.AddWithValue("@Nome", nome);
+                    myCommand.Parameters.AddWithValue("@Cpf", cpf);
+
+                    myCommand.ExecuteNonQuery();
+                    Console.WriteLine("Cidadao Inserido com Sucesso!");
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro no banco de dados ao criar cidadão: {ex.Message}\u001b[0m");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro de argumento inválido ao criar cidadão: {ex.Message}\u001b[0m");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\u001b[31mErro inesperado ao criar cidadão: {ex.Message}\u001b[0m");
             }
 
-            //Expressao Regular para validar CPF
-            if (!CpfTreatment.ValidarCPF(cpf))
-            {
-                Console.WriteLine("CPF inválido!");
-                return;
-            }
-            cpf = CpfTreatment.RemoverMascaraCPF(cpf);
-           
-
-            if (CpfJaExiste(cpf))
-            {
-                Console.WriteLine("O cpf já foi cadastrado.");
-                return;
-            }
-
-            string query = "INSERT INTO Cidadaos ('Nome', 'Cpf') VALUES (@Nome, @Cpf)";
-            using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
-            {
-                myCommand.Parameters.AddWithValue("@Nome", nome);
-                myCommand.Parameters.AddWithValue("@Cpf", cpf);
-
-                myCommand.ExecuteNonQuery();
-                Console.WriteLine("Cidadao Inserido com Sucesso!");
-            }
         }
 
 
-        public static void Read_t(string nome = null, string cpf= null)
+        public static void Read_t(string nome = null, string cpf = null)
         {
-           
-            // Cria a query inicial
-            string query = "SELECT * FROM Cidadaos WHERE 1=1";  // A condição WHERE 1=1 sempre é verdadeira
-
-            // Adiciona os filtros dinamicamente
-            if (!string.IsNullOrEmpty(nome))
+            try
             {
-                query += " AND Nome = @Nome";
-            }
+                // Cria a query inicial
+                string query = "SELECT * FROM Cidadaos WHERE 1=1";  // A condição WHERE 1=1 sempre é verdadeira
 
-            if (!string.IsNullOrEmpty(cpf))
-            {
-                query += " AND Cpf = @Cpf";
-                cpf = CpfTreatment.RemoverMascaraCPF(cpf);
-            }
-
-            using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
-            {
-                // Adiciona os parâmetros se existirem
+                // Adiciona os filtros dinamicamente
                 if (!string.IsNullOrEmpty(nome))
                 {
-                    myCommand.Parameters.AddWithValue("@Nome",nome);
+                    query += " AND Nome = @Nome";
                 }
 
                 if (!string.IsNullOrEmpty(cpf))
                 {
-                    myCommand.Parameters.AddWithValue("@Cpf", cpf);
+                    query += " AND Cpf = @Cpf";
+                    cpf = CpfTreatment.RemoverMascaraCPF(cpf);
                 }
 
-                var result = myCommand.ExecuteReader();
-                if (result.HasRows)
+                using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
                 {
-                    while (result.Read())
+                    // Adiciona os parâmetros se existirem
+                    if (!string.IsNullOrEmpty(nome))
                     {
-                        Console.WriteLine("ID: {0} - Nome: {1} - CPF: {2}", result["id"], result["Nome"], CpfTreatment.FormatCPF(result["Cpf"].ToString()));
+                        myCommand.Parameters.AddWithValue("@NomeS", nome);
                     }
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(nome) && !string.IsNullOrEmpty(cpf))
+
+                    if (!string.IsNullOrEmpty(cpf))
                     {
-                        Console.WriteLine("Nenhum Cidadão encontrado com esse Nome e CPF.");
+                        myCommand.Parameters.AddWithValue("@Cpf", cpf);
                     }
-                    else if (!string.IsNullOrEmpty(nome))
+
+                    var result = myCommand.ExecuteReader();
+                    if (result.HasRows)
                     {
-                        Console.WriteLine("Nenhum Cidadão encontrado com esse Nome.");
+                        while (result.Read())
+                        {
+                            Console.WriteLine("ID: {0} - Nome: {1} - CPF: {2}", result["id"], result["Nome"], CpfTreatment.FormatCPF(result["Cpf"].ToString()));
+                        }
                     }
-                    else if (!string.IsNullOrEmpty(cpf))
+                    else
                     {
-                        Console.WriteLine("Nenhum Cidadão encontrado com esse CPF.");
+                        if (!string.IsNullOrEmpty(nome) && !string.IsNullOrEmpty(cpf))
+                        {
+                            Console.WriteLine("Nenhum Cidadão encontrado com esse Nome e CPF.");
+                        }
+                        else if (!string.IsNullOrEmpty(nome))
+                        {
+                            Console.WriteLine("Nenhum Cidadão encontrado com esse Nome.");
+                        }
+                        else if (!string.IsNullOrEmpty(cpf))
+                        {
+                            Console.WriteLine("Nenhum Cidadão encontrado com esse CPF.");
+                        }
                     }
                 }
             }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro no banco de dados ao buscar cidadãos: : {ex.Message}\u001b[0m");
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro de operação inválida ao buscar cidadãos: : {ex.Message}\u001b[0m");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\u001b[31mErro inesperado ao buscar cidadãos: : {ex.Message}\u001b[0m");
+            }
+
         }
 
 
         public static void update(int id, string novoNome, string novoCpf)
         {
-            if (string.IsNullOrEmpty(novoNome) && string.IsNullOrEmpty(novoCpf))
-            {
-                Console.WriteLine("É necessário fornecer um novo nome ou um novo cpf,");
-                return;
-            }
 
-            string query = "UPDATE Cidadaos SET ";
-            List<string> updates = new List<string>();
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-
-            if (!string.IsNullOrEmpty(novoNome))
+            try
             {
-                updates.Add("Nome = @novoNome");
-                parameters["@novoNome"] = novoNome;
-            }
-
-            if (!string.IsNullOrEmpty(novoCpf))
-            {
-                novoCpf = CpfTreatment.RemoverMascaraCPF(novoCpf);
-                if (CpfJaExiste(novoCpf))
+                if (string.IsNullOrEmpty(novoNome) && string.IsNullOrEmpty(novoCpf))
                 {
-
-                    Console.WriteLine("O cpf já foi cadastrado.");
+                    Console.WriteLine("É necessário fornecer um novo nome ou um novo cpf,");
                     return;
                 }
 
-                updates.Add("Cpf = @novoCpf");
-                parameters["@novoCpf"] = novoCpf;
+                string query = "UPDATE Cidadaos SET ";
+                List<string> updates = new List<string>();
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+                if (!string.IsNullOrEmpty(novoNome))
+                {
+                    updates.Add("Nome = @novoNome");
+                    parameters["@novoNome"] = novoNome;
+                }
+
+                if (!string.IsNullOrEmpty(novoCpf))
+                {
+                    novoCpf = CpfTreatment.RemoverMascaraCPF(novoCpf);
+                    if (CpfJaExiste(novoCpf))
+                    {
+
+                        Console.WriteLine("O cpf já foi cadastrado.");
+                        return;
+                    }
+
+                    updates.Add("Cpf = @novoCpf");
+                    parameters["@novoCpf"] = novoCpf;
+                }
+
+                query += string.Join(", ", updates) + " WHERE id = @id";
+                parameters["@id"] = id;
+
+                using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
+                {
+                    foreach (var param in parameters)
+                    {
+                        myCommand.Parameters.AddWithValue(param.Key, param.Value);
+                    }
+
+                    int rowsAffected = myCommand.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine("Cidadão atualizado com sucesso.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nenhum Cidadão encontrado com esse id.");
+                    }
+                }
             }
-
-            query += string.Join(", ", updates) + " WHERE id = @id";
-            parameters["@id"] = id;
-
-            using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
+            catch (SQLiteException ex)
             {
-                foreach (var param in parameters)
-                {
-                    myCommand.Parameters.AddWithValue(param.Key, param.Value);
-                }
-
-                int rowsAffected = myCommand.ExecuteNonQuery();
-
-                if (rowsAffected > 0)
-                {
-                    Console.WriteLine("Cidadão atualizado com sucesso.");
-                }
-                else
-                {
-                    Console.WriteLine("Nenhum Cidadão encontrado com esse id.");
-                }
+                Console.WriteLine($"\u001b[31mErro no banco de dados ao atualizar cidadão: : {ex.Message}\u001b[0m");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\u001b[31mErro inesperado ao atualizar cidadão: : {ex.Message}\u001b[0m");
             }
         }
 
-        private  static bool CpfJaExiste(string cpf) {
+        private static bool CpfJaExiste(string cpf)
+        {
 
-            
-
-            string checkQuery = "SELECT COUNT(*) FROM Cidadaos WHERE Cpf = @Cpf";
-
-            using (SQLiteCommand checkCommand = new SQLiteCommand(checkQuery, Database.GetConnection()))
+            try
             {
-                checkCommand.Parameters.AddWithValue("@Cpf", cpf);
+                string checkQuery = "SELECT COUNT(*) FROM Cidadaos WHERE Cpf = @Cpf";
 
-                int cpfCount = Convert.ToInt32(checkCommand.ExecuteScalar());
-
-                if (cpfCount > 0)
+                using (SQLiteCommand checkCommand = new SQLiteCommand(checkQuery, Database.GetConnection()))
                 {
-                    return true;
+                    checkCommand.Parameters.AddWithValue("@Cpf", cpf);
+
+                    int cpfCount = Convert.ToInt32(checkCommand.ExecuteScalar());
+
+                    if (cpfCount > 0)
+                    {
+                        return true;
+                    }
                 }
             }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro no banco de dados ao verificar CPF: {ex.Message}\u001b[0m");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\u001b[31mErro inesperado ao verificar CPF: {ex.Message}\u001b[0m");
+                return false;
+            }
+
+
 
             return false;
         }
@@ -183,31 +244,41 @@ namespace DesafioCientec
 
         public static void Delete(string nome, string cpf)
         {
-
-            if (string.IsNullOrEmpty(nome) && string.IsNullOrEmpty(cpf))
+            try
             {
-                Console.WriteLine("É necessário fornecer nome & cpf a serem deletados");
-                return;
+                if (string.IsNullOrEmpty(nome) && string.IsNullOrEmpty(cpf))
+                {
+                    Console.WriteLine("É necessário fornecer nome & cpf a serem deletados");
+                    return;
+                }
+
+                cpf = CpfTreatment.RemoverMascaraCPF(cpf);
+                string query = "DELETE FROM Cidadaos WHERE Nome= @Nome AND Cpf= @Cpf";
+
+                using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
+                {
+                    myCommand.Parameters.AddWithValue("@Nome", nome);
+                    myCommand.Parameters.AddWithValue("@Cpf", cpf);
+
+                    int rowsAffected = myCommand.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine("Cidadão deletado com sucesso.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nenhum Cidadão encontrado com esse nome e Cpf.");
+                    }
+                }
             }
-
-            cpf = CpfTreatment.RemoverMascaraCPF(cpf);
-            string query = "DELETE FROM Cidadaos WHERE Nome= @Nome AND Cpf= @Cpf";
-
-            using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
+            catch (SQLiteException ex)
             {
-                myCommand.Parameters.AddWithValue("@Nome", nome);
-                myCommand.Parameters.AddWithValue("@Cpf", cpf);
-
-                int rowsAffected = myCommand.ExecuteNonQuery();
-
-                if (rowsAffected > 0)
-                {
-                    Console.WriteLine("Cidadão deletado com sucesso.");
-                }
-                else
-                {
-                    Console.WriteLine("Nenhum Cidadão encontrado com esse nome e Cpf.");
-                }
+                Console.WriteLine($"\u001b[31mErro no banco de dados ao deletar cidadão: {ex.Message}\u001b[0m");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\u001b[31mErro inesperado ao deletar cidadão: {ex.Message}\u001b[0m");
             }
         }
     }

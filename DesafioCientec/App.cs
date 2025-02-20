@@ -13,7 +13,7 @@ namespace DesafioCientec
 
         string selected_font = "✅ \u001b[32m";
         string selected_font_Color = "\u001b[32m";
-        string reset_font_Color = "\u001b[0m";
+       
         private int option = 1;
         Database dbObj = new Database();
         public void init()
@@ -21,7 +21,7 @@ namespace DesafioCientec
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.OutputEncoding = Encoding.Unicode;
             Console.CursorVisible = false;
-            
+
             Menu();
         }
 
@@ -59,13 +59,13 @@ namespace DesafioCientec
                         option = 1;
                         break;
 
-                        
+
                     case 3:
                         Console.Clear();
                         Console.WriteLine("Consulta por Nome");
                         Console.Write("Digite o Nome: ");
-                        nome= Console.ReadLine();
-                        UserRepository.Read_t(nome:nome);
+                        nome = Console.ReadLine();
+                        UserRepository.Read_t(nome: nome);
                         Console.WriteLine();
                         option = 1;
                         break;
@@ -73,7 +73,7 @@ namespace DesafioCientec
                         Console.Clear();
                         Console.WriteLine("Consulta por CPF no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY");
                         Console.Write("Digite o CPF: ");
-                        cpf= Console.ReadLine();
+                        cpf = Console.ReadLine();
 
                         UserRepository.Read_t(cpf: cpf);
                         Console.WriteLine();
@@ -87,10 +87,10 @@ namespace DesafioCientec
                         cpf = Console.ReadLine();
                         Console.WriteLine();
                         Console.Write("Digite o Nome: ");
-                        nome= Console.ReadLine();
-                        UserRepository.Read_t(nome:nome, cpf: cpf);
+                        nome = Console.ReadLine();
+                        UserRepository.Read_t(nome: nome, cpf: cpf);
                         Console.WriteLine();
-                       
+
                         Console.WriteLine();
                         option = 1;
                         break;
@@ -103,15 +103,15 @@ namespace DesafioCientec
                         int id;
                         int.TryParse(Console.ReadLine(), out id);
 
-                        Console.Write($"Digite o nome corrigido ou aperte {selected_font_Color}enter{reset_font_Color} para não alterar : ");
-                        nome= Console.ReadLine();
+                        Console.Write($"Digite o nome corrigido ou aperte \u001b[31menter\u001b[0m para não alterar : ");
+                        nome = Console.ReadLine();
                         Console.WriteLine();
 
-                        Console.Write($"Digite o CPF corrigido no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY ou aperte {selected_font_Color}enter{reset_font_Color} para não alterar : ");
-                        cpf= Console.ReadLine();
+                        Console.Write($"Digite o CPF corrigido no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY ou aperte \u001b[31menter\u001b[0m para não alterar : ");
+                        cpf = Console.ReadLine();
                         Console.WriteLine();
                         UserRepository.update(id, nome, cpf);
-                        
+
                         Console.WriteLine();
                         option = 1;
                         break;
@@ -127,7 +127,7 @@ namespace DesafioCientec
                         Console.WriteLine();
                         UserRepository.Delete(nome, cpf);
 
-                        
+
                         Console.WriteLine();
                         option = 1;
                         break;
@@ -145,7 +145,7 @@ namespace DesafioCientec
                 option = MenuOptions();
             }
             Console.WriteLine("Tchau!");
-            
+
         }
 
         private int CrudOptions()

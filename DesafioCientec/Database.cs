@@ -12,7 +12,9 @@ namespace DesafioCientec
 
         public Database()
         {
-            myConnection = new SQLiteConnection("Data Source= database.sqlite3");
+            try
+            {
+                myConnection = new SQLiteConnection("Data Source= database.sqlite3");
 
             //Criar pela primeira vez
             if (!File.Exists("./database.sqlite3"))
@@ -24,26 +26,62 @@ namespace DesafioCientec
                 CloseConnection();
                 //Create Tables;
             }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro no SQLite ao inicializar o banco de dados: {ex.Message}\u001b[0m");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro de IO ao criar/verificar o arquivo do banco de dados: {ex.Message}\u001b[0m");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\u001b[31mErro inesperado ao inicializar o banco de dados: {ex.Message}\u001b[0m");
+            }
         }
 
 
         public void OpenConnection()
         {
-            if (myConnection?.State != System.Data.ConnectionState.Open)
+            try
             {
-                //Console.WriteLine("Database aberto!");
-                myConnection?.Open();
+                if (myConnection?.State != System.Data.ConnectionState.Open)
+                {
+                    //Console.WriteLine("Database aberto!");
+                    myConnection?.Open();
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro no SQLite ao abrir conexão: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro de operação inválida ao abrir conexão: {ex.Message}");
             }
         }
 
         public void CloseConnection()
         {
-
-            if (myConnection?.State != System.Data.ConnectionState.Closed)
+            try
             {
 
-                myConnection?.Close();
+                if (myConnection?.State != System.Data.ConnectionState.Closed)
+                {
 
+                    myConnection?.Close();
+
+                }
+
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro no SQLite ao fechar conexão: {ex.Message}\u001b[0m");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro de operação inválida ao fechar conexão: {ex.Message}\u001b[0m");
             }
         }
 
@@ -61,8 +99,9 @@ namespace DesafioCientec
 
         public static void createTable()
         {
-            
-            string query = @"CREATE TABLE Cidadaos (
+            try
+            {
+                string query = @"CREATE TABLE Cidadaos (
                                                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                     Nome TEXT NOT NULL,
                                                     Cpf CHAR(11) NOT NULL UNIQUE );";
@@ -71,6 +110,16 @@ namespace DesafioCientec
             {
                 myCommand.ExecuteNonQuery();
                 Console.WriteLine("Tabela 'Cidadaos' verificada/criada com sucesso.");
+            }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro no SQLite ao criar/verificar a tabela: {ex.Message}\u001b[0m");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"\u001b[31mErro de operação inválida ao criar/verificar a tabela: {ex.Message}\u001b[0m");
+
             }
         }
     }
