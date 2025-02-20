@@ -47,7 +47,7 @@ namespace DesafioCientec
                         Console.Write("Digite o artist do album: ");
                         inp2 = Console.ReadLine();
                         Console.WriteLine();
-                        //CREATE FUNCTION
+                        UserRepository.Create(inp1, inp2);
                         break;
 
                     case 2:

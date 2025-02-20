@@ -15,11 +15,13 @@ namespace DesafioCientec
             myConnection = new SQLiteConnection("Data Source= database.sqlite3");
 
             //Criar pela primeira vez
-
             if (!File.Exists("./database.sqlite3"))
             {
                 SQLiteConnection.CreateFile("database.sqlite3");
                 System.Console.WriteLine("Database file created");
+                OpenConnection();
+                createTable();
+                CloseConnection();
                 //Create Tables;
             }
         }
@@ -54,6 +56,22 @@ namespace DesafioCientec
             }
 
             return myConnection;
+        }
+
+
+        public static void createTable()
+        {
+            
+            string query = @"CREATE TABLE Cidadaos (
+                                                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                    Nome TEXT NOT NULL,
+                                                    Cpf CHAR(11) NOT NULL UNIQUE );";
+
+            using (SQLiteCommand myCommand = new SQLiteCommand(query, Database.GetConnection()))
+            {
+                myCommand.ExecuteNonQuery();
+                Console.WriteLine("Tabela 'Cidadaos' verificada/criada com sucesso.");
+            }
         }
     }
 }
