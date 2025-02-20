@@ -5,7 +5,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>DesafioCientec.Tests</StartupObject>
+    <StartupObject>DesafioCientec.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
