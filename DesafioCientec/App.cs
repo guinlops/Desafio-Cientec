@@ -208,8 +208,8 @@ namespace DesafioCientec
         {
             
             Console.WriteLine("Tchau!👋👋👋");
-            dbObj = null!;
             dbObj.CloseConnection();
+            dbObj = null!;
 
             Environment.Exit(0);
         }
