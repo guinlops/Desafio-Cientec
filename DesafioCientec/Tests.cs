@@ -3,30 +3,39 @@
     internal class Tests
     {
         public static Database? db;
-        static void Main()
-        {
-            TestFileExists();   
-            db = TestCriacaoDoBanco();
-            Test_validaCPF();
-            TestInsercao();
-            TestUpdate();
-            TestLeitura();
-            TestDelete();
 
-            Console.WriteLine();
-            Console.WriteLine("Aperte qualquer Tecla para continuar");
-            Console.ReadKey();
+        public  Tests() {    
+        }
+        public void TestInit()
+        {
+
+            if (!TestFileExists())
+            {
+                db = TestCriacaoDoBanco();
+                Test_validaCPF();
+                TestInsercao();
+                TestUpdate();
+                TestLeitura();
+                TestDelete();
+
+                Console.WriteLine();
+                Console.WriteLine("Aperte qualquer Tecla para continuar");
+                Console.ReadKey();
+                Console.Clear();
+            }
+
+            return;
 
         }
 
-        static Database TestCriacaoDoBanco()
+        private Database TestCriacaoDoBanco()
         {
             Database db = new Database("test_database.sqlite3");
             return db;
         }
 
 
-        static void TestInsercao()
+        private void TestInsercao()
         {
             db?.OpenConnection();
             int count = 0;
@@ -60,7 +69,7 @@
 
         }
 
-        static void TestLeitura()
+        private void TestLeitura()
         {
             int count = 0;
             var originalConsoleOut = Console.Out;
@@ -111,7 +120,7 @@
         }
 
 
-        static void Test_validaCPF()
+        private void Test_validaCPF()
         {
             db?.OpenConnection();
             int count = 0;
@@ -142,7 +151,7 @@
             }
         }
 
-        static void TestDelete(bool reset = false)
+        private void TestDelete(bool reset = false)
         {
             int count = 0;
 
@@ -177,7 +186,7 @@
             }
         }
 
-        static void TestUpdate() //Funcionando apenas ao criar o banco pela primeira vez. Já que os Id's sao estáticos. Se for necessário, é preciso excluir o arquivo test_database.sq3lite.
+        private void TestUpdate() //Funcionando apenas ao criar o banco pela primeira vez. Já que os Id's sao estáticos. Se for necessário, é preciso excluir o arquivo test_database.sq3lite.
         {
             db?.OpenConnection();
             int count = 0;
@@ -215,18 +224,25 @@
                 Console.WriteLine("Todos os testes update passaram!");
             }
         }
-        
-        static void TestFileExists()
+
+        private bool TestFileExists()
         {
             if (File.Exists($"./test_database.sqlite3"))
             {
-                Console.WriteLine("\u001b[31mExclua o arquivo test_database.sqlite3 para executar testes\u001b[0m ");
-                Console.WriteLine("Aperte qualquer Tecla para continuar");
+                Console.WriteLine("\u001b[31mExclua o arquivo test_database.sqlite3 localizado em ...\\bin\\Debug\\net8.0\\test_database.sqlite3 para executar testes\u001b[0m ");
+                Console.WriteLine("Aperte qualquer Tecla para voltar");
                 Console.ReadKey();
-                Environment.Exit(0);
+                Console.Clear();
+                //Environment.Exit(0);
+                return true;
             }
+
+            return false;
             
         }
+
+
+        
         
     }
 }

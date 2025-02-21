@@ -5,21 +5,19 @@ namespace DesafioCientec
     {
         public App() { }
 
-        string selected_font = "✅ \u001b[32m";
+        const string selected_font = "✅ \u001b[32m";
         //string selected_font_Color = "\u001b[32m";      
         
         private int option = 1;
         Database dbObj = new Database("database.sqlite3");
         public void init()
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.OutputEncoding = Encoding.Unicode;
-            Console.CursorVisible = false;
+            InitConsoleStyles();   
             Menu();
         }
         private void Menu()
         {
-            while (option != 8)
+            while (option != 9)
             {
                 Console.WriteLine("\nUse ⬆️ and ⬇️ para navegar e pressione \u001b[32mENTER\u001b[0m para selecionar 👍👍👍");
                 string? nome, cpf;
@@ -29,6 +27,11 @@ namespace DesafioCientec
                 switch (option)
                 {
                     case 1:
+                        Console.Clear();
+                        Tests test = new Tests();
+                        CallTest();
+                        break;
+                    case 2:
                         //TRY
                         Console.Clear();
                         Console.WriteLine("CREATE");                    
@@ -40,14 +43,14 @@ namespace DesafioCientec
                         Console.WriteLine();
                         UserRepository.Create(nome ?? string.Empty, cpf ?? string.Empty);                      
                         break;
-                    case 2:
+                    case 3:
                         Console.Clear();
                         Console.WriteLine("Consulta geral");
                         UserRepository.Read_t();
                         Console.WriteLine();
                         option = 1;
                         break;
-                    case 3:
+                    case 4:
                         Console.Clear();
                         Console.WriteLine("Consulta por Nome");
                         Console.Write("Digite o Nome: ");
@@ -56,7 +59,7 @@ namespace DesafioCientec
                         Console.WriteLine();
                         option = 1;
                         break;
-                    case 4:
+                    case 5:
                         Console.Clear();
                         Console.WriteLine("Consulta por CPF no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY");
                         Console.Write("Digite o CPF: ");
@@ -67,7 +70,7 @@ namespace DesafioCientec
                         option = 1;
                         break;
 
-                    case 5:
+                    case 6:
                         Console.Clear();
                         Console.WriteLine("Consulta por CPF e por Nome");
                         Console.Write("Digite o CPF no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY: ");
@@ -81,7 +84,7 @@ namespace DesafioCientec
                         Console.WriteLine();
                         option = 1;
                         break;
-                    case 6:
+                    case 7:
                         Console.Clear();
                         Console.WriteLine("UPDATE");
                         Console.WriteLine("Digite o id da linha a ser editada: ");
@@ -97,7 +100,7 @@ namespace DesafioCientec
                         Console.WriteLine();
                         option = 1;
                         break;
-                    case 7:
+                    case 8:
                         Console.Clear();
                         Console.WriteLine("DELETE");
                         Console.Write("Digite o Nome: ");
@@ -110,16 +113,16 @@ namespace DesafioCientec
                         Console.WriteLine();
                         option = 1;
                         break;
-                    case 8:
+                    case 9:
                         Console.Clear();
-                        Console.WriteLine("Tchau!👋👋👋");
-                        dbObj.CloseConnection();
+                        CloseApp();
                         return;
                 }
                 dbObj.CloseConnection();
                 option = MenuOptions();
             }
-            Console.WriteLine("Tchau!");
+            CloseApp();
+
         }
         private int CrudOptions()
         {
@@ -129,23 +132,24 @@ namespace DesafioCientec
             while (!isSelected)
             {
                 Console.SetCursorPosition(left, top);
-                Console.WriteLine($"{(option == 1 ? selected_font : "   ")}Cadastro\u001b[0m");
-                Console.WriteLine($"{(option == 2 ? selected_font : "   ")}Consultar todos os usuários cadastrados 🔎\u001b[0m");
-                Console.WriteLine($"{(option == 3 ? selected_font : "   ")}Consultar por Nome 🔎\u001b[0m");
-                Console.WriteLine($"{(option == 4 ? selected_font : "   ")}Consultar por CPF 🔎\u001b[0m");
-                Console.WriteLine($"{(option == 5 ? selected_font : "   ")}Consultar por CPF e Nome 🔎\u001b[0m");
-                Console.WriteLine($"{(option == 6 ? selected_font : "   ")}Editar ✏️\u001b[0m");
-                Console.WriteLine($"{(option == 7 ? selected_font : "   ")}Deletar 🗑️\u001b[0m");
-                Console.WriteLine($"{(option == 8 ? selected_font : "   ")}Sair 😤\u001b[0m");
+                Console.WriteLine($"{(option == 1 ? selected_font : "   ")}\u001b[43mExecutar Testes Automáticos 📝📝📝\u001b[0m");
+                Console.WriteLine($"{(option == 2 ? selected_font : "   ")}Cadastro\u001b[0m");
+                Console.WriteLine($"{(option == 3 ? selected_font : "   ")}Consultar todos os usuários cadastrados 🔎\u001b[0m");
+                Console.WriteLine($"{(option == 4 ? selected_font : "   ")}Consultar por Nome 🔎\u001b[0m");
+                Console.WriteLine($"{(option == 5 ? selected_font : "   ")}Consultar por CPF 🔎\u001b[0m");
+                Console.WriteLine($"{(option == 6 ? selected_font : "   ")}Consultar por CPF e Nome 🔎\u001b[0m");
+                Console.WriteLine($"{(option == 7 ? selected_font : "   ")}Editar ✏️\u001b[0m");
+                Console.WriteLine($"{(option == 8 ? selected_font : "   ")}Deletar 🗑️\u001b[0m");
+                Console.WriteLine($"{(option == 9 ? selected_font : "   ")}Sair 😤\u001b[0m");
                 key = Console.ReadKey(true);
 
                 switch (key.Key)
                 {
                     case ConsoleKey.DownArrow:
-                        option = (option == 8 ? 1 : option + 1);
+                        option = (option == 9 ? 1 : option + 1);
                         break;
                     case ConsoleKey.UpArrow:
-                        option = (option == 1 ? 8 : option - 1);
+                        option = (option == 1 ? 9 : option - 1);
                         break;
 
                     case ConsoleKey.Enter:
@@ -180,7 +184,7 @@ namespace DesafioCientec
                         break;
 
                     case ConsoleKey.Enter:
-                        option = (option == 2 ? 8 : 1);
+                        option = (option == 2 ? 9 : 1);
                         Console.Clear();
                         isSelected = true;
                         break;
@@ -190,5 +194,34 @@ namespace DesafioCientec
             return option;
 
         }
+
+
+        private void CallTest()
+        {
+
+            Tests test = new Tests();
+            test.TestInit();
+            test = null!; // Remove a referência (GC desaloca quando necessário)
+        }
+
+        private void CloseApp()
+        {
+            
+            Console.WriteLine("Tchau!👋👋👋");
+            dbObj = null!;
+            dbObj.CloseConnection();
+
+            Environment.Exit(0);
+        }
+
+        private void InitConsoleStyles()
+        {
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.OutputEncoding = Encoding.Unicode;
+            Console.CursorVisible = false;
+        }
+
+
     }
 }
