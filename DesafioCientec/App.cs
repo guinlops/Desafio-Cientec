@@ -216,7 +216,7 @@ namespace DesafioCientec
 
         private void InitConsoleStyles()
         {
-
+            Console.Clear();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.OutputEncoding = Encoding.Unicode;
             Console.CursorVisible = false;
