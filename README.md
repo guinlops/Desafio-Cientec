@@ -75,5 +75,13 @@ Inclui funcionalidades para criação, leitura, atualização e remoção de reg
 
 Este projeto foi desenvolvido para praticar manipulação de banco de dados SQLite com C#, incluindo boas práticas de validação de dados e uso de comandos SQL parametrizados.
 
+## Prints no Windows 11 PowerShell
+![image](https://github.com/user-attachments/assets/1f112d51-663d-4211-9b1a-b624809ca181)
+![image](https://github.com/user-attachments/assets/f09c7f5c-5b67-4e1f-8f09-a38042d81d9c)
+
+
+
+
+
 > **Este projeto foi desenvolvido como solução ao desafio CIENTEC.**
 
