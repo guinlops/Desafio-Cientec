@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Text;
 namespace DesafioCientec
 {
     internal class App
     {
         public App() { }
 
-
         string selected_font = "✅ \u001b[32m";
-        string selected_font_Color = "\u001b[32m";
-       
+        //string selected_font_Color = "\u001b[32m";      
+        
         private int option = 1;
         Database dbObj = new Database("database.sqlite3");
         public void init()
@@ -22,13 +15,8 @@ namespace DesafioCientec
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.OutputEncoding = Encoding.Unicode;
             Console.CursorVisible = false;
-
             Menu();
         }
-
-        //(nome!=null?nome:"")
-        //(cpf!=null?cpf:"")
-
         private void Menu()
         {
             while (option != 8)
@@ -40,23 +28,18 @@ namespace DesafioCientec
                 dbObj.OpenConnection();
                 switch (option)
                 {
-                    
                     case 1:
                         //TRY
                         Console.Clear();
-                        Console.WriteLine("CREATE");
-                        
+                        Console.WriteLine("CREATE");                    
                         Console.Write("Digite o Nome: ");
                         nome = Console.ReadLine();
                         Console.WriteLine();
                         Console.Write("Digite o CPF no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY: ");
                         cpf = Console.ReadLine();
                         Console.WriteLine();
-                        UserRepository.Create(nome ?? string.Empty, cpf ?? string.Empty);
-
-                        
+                        UserRepository.Create(nome ?? string.Empty, cpf ?? string.Empty);                      
                         break;
-
                     case 2:
                         Console.Clear();
                         Console.WriteLine("Consulta geral");
@@ -64,15 +47,12 @@ namespace DesafioCientec
                         Console.WriteLine();
                         option = 1;
                         break;
-
-
                     case 3:
                         Console.Clear();
                         Console.WriteLine("Consulta por Nome");
                         Console.Write("Digite o Nome: ");
                         nome = Console.ReadLine();
-                        UserRepository.Read_t(nome: nome ?? string.Empty);
-                        
+                        UserRepository.Read_t(nome: nome ?? string.Empty);                       
                         Console.WriteLine();
                         option = 1;
                         break;
@@ -101,28 +81,22 @@ namespace DesafioCientec
                         Console.WriteLine();
                         option = 1;
                         break;
-
-
                     case 6:
                         Console.Clear();
                         Console.WriteLine("UPDATE");
                         Console.WriteLine("Digite o id da linha a ser editada: ");
                         int id;
                         int.TryParse(Console.ReadLine(), out id);
-
-                        Console.Write($"Digite o nome corrigido ou aperte \u001b[31menter\u001b[0m para não alterar : ");
+                        Console.Write($"Digite o nome corrigido ou aperte \u001b[32menter\u001b[0m para não alterar : ");
                         nome = Console.ReadLine();
                         Console.WriteLine();
-
-                        Console.Write($"Digite o CPF corrigido no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY ou aperte \u001b[31menter\u001b[0m para não alterar : ");
+                        Console.Write($"Digite o CPF corrigido no formato XXXXXXXXXXX ou XXX.XXX.XXX-YY ou aperte \u001b[32menter\u001b[0m para não alterar : ");
                         cpf = Console.ReadLine();
                         Console.WriteLine();
                         UserRepository.update(id, nome ?? string.Empty, cpf ?? string.Empty);
-
                         Console.WriteLine();
                         option = 1;
                         break;
-
                     case 7:
                         Console.Clear();
                         Console.WriteLine("DELETE");
@@ -133,36 +107,25 @@ namespace DesafioCientec
                         cpf = Console.ReadLine();
                         Console.WriteLine();
                         UserRepository.Delete(nome ?? string.Empty, cpf ?? string.Empty);
-
-
                         Console.WriteLine();
                         option = 1;
                         break;
-
-
                     case 8:
                         Console.Clear();
                         Console.WriteLine("Tchau!👋👋👋");
                         dbObj.CloseConnection();
                         return;
-
                 }
                 dbObj.CloseConnection();
-
                 option = MenuOptions();
             }
             Console.WriteLine("Tchau!");
-
         }
-
         private int CrudOptions()
         {
             ConsoleKeyInfo key;
             bool isSelected = false;
             (int left, int top) = Console.GetCursorPosition();
-
-
-
             while (!isSelected)
             {
                 Console.SetCursorPosition(left, top);
@@ -174,7 +137,6 @@ namespace DesafioCientec
                 Console.WriteLine($"{(option == 6 ? selected_font : "   ")}Editar ✏️\u001b[0m");
                 Console.WriteLine($"{(option == 7 ? selected_font : "   ")}Deletar 🗑️\u001b[0m");
                 Console.WriteLine($"{(option == 8 ? selected_font : "   ")}Sair 😤\u001b[0m");
-
                 key = Console.ReadKey(true);
 
                 switch (key.Key)

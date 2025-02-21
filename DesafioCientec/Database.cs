@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 namespace DesafioCientec
 {
     internal class Database
@@ -15,7 +10,6 @@ namespace DesafioCientec
             try
             {
                 myConnection = new SQLiteConnection($"Data Source={db_url}");
-
             //Criar pela primeira vez
             if (!File.Exists($"./{db_url}"))
             {
@@ -24,7 +18,7 @@ namespace DesafioCientec
                 OpenConnection();
                 createTable();
                 CloseConnection();
-                //Create Tables;
+                
             }
             }
             catch (SQLiteException ex)
@@ -40,8 +34,6 @@ namespace DesafioCientec
                 Console.WriteLine($"\u001b[31mErro inesperado ao inicializar o banco de dados: {ex.Message}\u001b[0m");
             }
         }
-
-
         public void OpenConnection()
         {
             try
@@ -66,14 +58,10 @@ namespace DesafioCientec
         {
             try
             {
-
                 if (myConnection?.State != System.Data.ConnectionState.Closed)
                 {
-
                     myConnection?.Close();
-
                 }
-
             }
             catch (SQLiteException ex)
             {
@@ -92,11 +80,8 @@ namespace DesafioCientec
             {
                 throw new InvalidOperationException("A conexão com o banco de dados não foi inicializada.");
             }
-
             return myConnection;
         }
-
-
         public static void createTable()
         {
             try
@@ -119,11 +104,8 @@ namespace DesafioCientec
             catch (InvalidOperationException ex)
             {
                 Console.WriteLine($"\u001b[31mErro de operação inválida ao criar/verificar a tabela: {ex.Message}\u001b[0m");
-
             }
         }
-
-        
     }
 }
 
